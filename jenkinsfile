@@ -1,6 +1,5 @@
 pipeline 
 {
-    def app     
     agent 
     {
         docker
@@ -12,23 +11,32 @@ pipeline
     } 
     stages 
     {
-
+        def app     
         stage('Clone repository') {               
-            checkout scm    
+            steps{
+                checkout scm
+            }
+            
         }     
         stage('Build image') {         
-            app = docker.build("jamecaes/docker-test")    
+            step{
+                app = docker.build("jamecaes/docker-test")    
+            }
         }     
         stage('Test image') {           
-            app.inside {            
-                sh 'echo "Tests passed"'        
-            }    
+            step{
+                app.inside {            
+                    sh 'echo "Tests passed"'        
+                }    
+            }
         }     
         stage('Push image') {
-            docker.withRegistry('https://registromatrixtech.jfrog.io', 'git') {            
-                app.push("${env.BUILD_NUMBER}")            
-                app.push("latest")        
-            }    
+            step{
+                docker.withRegistry('https://registromatrixtech.jfrog.io', 'git') {            
+                    app.push("${env.BUILD_NUMBER}")            
+                    app.push("latest")        
+                }    
+            }
         }
     }
 }
