@@ -1,20 +1,34 @@
-node {    
+pipeline 
+{
     def app     
-    stage('Clone repository') {               
-        checkout scm    
-    }     
-    stage('Build image') {         
-        app = docker.build("jamecaes/docker-test")    
-    }     
-    stage('Test image') {           
-        app.inside {            
-            sh 'echo "Tests passed"'        
-        }    
-    }     
-    stage('Push image') {
-        docker.withRegistry('https://registromatrixtech.jfrog.io', 'git') {            
-            app.push("${env.BUILD_NUMBER}")            
-            app.push("latest")        
-        }    
+    agent 
+    {
+        docker
+        {
+            image 'maven:3-alpine'
+            //This exposes application through port 8081 to outside world
+            args '-u root -p 8081:8081 -v /var/run/docker.sock:/var/run/docker.sock  '
+        }
+    } 
+    stages 
+    {
+
+        stage('Clone repository') {               
+            checkout scm    
+        }     
+        stage('Build image') {         
+            app = docker.build("jamecaes/docker-test")    
+        }     
+        stage('Test image') {           
+            app.inside {            
+                sh 'echo "Tests passed"'        
+            }    
+        }     
+        stage('Push image') {
+            docker.withRegistry('https://registromatrixtech.jfrog.io', 'git') {            
+                app.push("${env.BUILD_NUMBER}")            
+                app.push("latest")        
+            }    
+        }
     }
 }
