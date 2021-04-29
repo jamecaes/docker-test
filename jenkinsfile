@@ -1,42 +1,29 @@
-pipeline 
-{
-    agent 
+
+node {    
+    def app     
+    stage('Initialize')
     {
-        docker
-        {
-            image 'maven:3-alpine'
-            //This exposes application through port 8081 to outside world
-            args '-u root -p 8081:8081 -v /var/run/docker.sock:/var/run/docker.sock  '
-        }
-    } 
-    stages 
-    {
-        def app     
-        stage('Clone repository') {               
-            steps{
-                checkout scm
-            }
-            
-        }     
-        stage('Build image') {         
-            step{
-                app = docker.build("jamecaes/docker-test")    
-            }
-        }     
-        stage('Test image') {           
-            step{
-                app.inside {            
-                    sh 'echo "Tests passed"'        
-                }    
-            }
-        }     
-        stage('Push image') {
-            step{
-                docker.withRegistry('https://registromatrixtech.jfrog.io', 'git') {            
-                    app.push("${env.BUILD_NUMBER}")            
-                    app.push("latest")        
-                }    
-            }
-        }
+        def dockerHome = tool 'docker'
+        def mavenHome  = tool 'maven'
+        env.PATH = "${dockerHome}/bin:${mavenHome}/bin:${env.PATH}"
+    }    
+    stage('Clone repository') {               
+        checkout scm    
+    }     
+    stage('Build image') { 
+        sh 'uname -a'
+        sh 'mvn -B -DskipTests clean package'          
+        app = docker.build("jamecaes/docker-test")    
+    }     
+    stage('Test image') {           
+        app.inside {            
+            sh 'echo "Tests passed"'        
+        }    
+    }     
+    stage('Push image') {
+        docker.withRegistry('https://registromatrixtech.jfrog.io', 'git') {            
+            app.push("${env.BUILD_NUMBER}")            
+            app.push("latest")        
+        }    
     }
 }
