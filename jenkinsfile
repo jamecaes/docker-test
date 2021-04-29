@@ -12,6 +12,7 @@ node {
     }     
     stage('Build image') { 
         sh 'uname -a'
+        sh 'java -version'
         sh 'mvn -B -DskipTests clean package'          
         app = docker.build("jamecaes/docker-test")    
     }     
