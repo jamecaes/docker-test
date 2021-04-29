@@ -5,8 +5,7 @@ node {
     {
         def dockerHome = tool 'docker'
         def mavenHome  = tool 'maven'
-        def javaHome  = tool 'openjdk-11'
-        env.PATH = "${dockerHome}/bin:${mavenHome}/bin:${javaHome}/bin:${env.PATH}"
+        env.PATH = "${dockerHome}/bin:${mavenHome}/bin:/usr/lib/jvm/java-11-openjdk-amd64/bin:${env.PATH}"
     }    
     stage('Clone repository') {               
         checkout scm    
