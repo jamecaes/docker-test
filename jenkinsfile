@@ -7,7 +7,7 @@ node {
         def mavenHome  = tool 'maven'
         env.PATH = "${dockerHome}/bin:${mavenHome}/bin:${env.PATH}"
         env.JAVA_HOME = "/usr/lib/jvm/java-11-openjdk-amd64"
-        echo "${env.PATH}"
+        echo "${env.JAVA_HOME}"
     }    
     stage('Clone repository') {               
         checkout scm    
@@ -16,7 +16,7 @@ node {
         
         sh 'uname -a'
         sh 'java -version'
-        sh 'echo $PATH'
+        sh 'echo $JAVA_HOME'
         sh 'mvn -B -DskipTests clean package'          
         app = docker.build("jamecaes/docker-test")    
     }     
