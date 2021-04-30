@@ -13,6 +13,8 @@ node {
     stage('Build image') { 
         
         sh 'mvn -B -DskipTests clean install'
+        sh 'echo $PATH'
+        sh 'docker ps -a'
         docker.withRegistry('https://registromatrixtech.jfrog.io', 'registry-docker'){
             app = docker.build("jamecaes/docker-test")    
         }
