@@ -12,11 +12,10 @@ node {
     }     
     stage('Build image') { 
         
-        sh 'uname -a'
-        sh 'java -version'
-        sh 'echo $JAVA_HOME'
-        sh 'mvn -B -DskipTests clean package'          
-        app = docker.build("jamecaes/docker-test")    
+        sh 'mvn -B -DskipTests clean install'
+        docker.withRegistry('https://registromatrixtech.jfrog.io', 'registry-docker'){
+            app = docker.build("jamecaes/docker-test")    
+        }
     }     
     stage('Test image') {           
         app.inside {            
@@ -24,7 +23,7 @@ node {
         }    
     }     
     stage('Push image') {
-        docker.withRegistry('https://registromatrixtech.jfrog.io', 'git') {            
+        docker.withRegistry('https://registromatrixtech.jfrog.io', 'registry-docker') {            
             app.push("${env.BUILD_NUMBER}")            
             app.push("latest")        
         }    
