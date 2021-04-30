@@ -8,13 +8,13 @@ pipeline {
     }
     tools {
         //jdk "openjdk-11"
-        maven "maven-3.6.1"
-        nodejs "nodejs"
-        gradle "Gradle 3.3"
+        maven "maven"
     }
     stages {
         stage('Clean Workspace') {
             steps {
-                deleteDir() // clean up our workspace
+                sh 'mvn clean install'
             }
         }
+    }
+}
