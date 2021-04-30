@@ -12,8 +12,10 @@ node {
         checkout scm    
     }     
     stage('Build image') { 
+        
         sh 'uname -a'
         sh 'java -version'
+        sh 'echo $PATH'
         sh 'mvn -B -DskipTests clean package'          
         app = docker.build("jamecaes/docker-test")    
     }     
