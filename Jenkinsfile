@@ -16,6 +16,8 @@ node {
         sh 'echo $PATH'
         sh 'docker ps -a'
         docker.withRegistry('https://registromatrixtech.jfrog.io', 'registry-docker'){
+            
+             sh 'docker ls'
             app = docker.build("jamecaes/docker-test")    
         }
     }     
