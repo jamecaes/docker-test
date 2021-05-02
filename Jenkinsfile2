@@ -1,10 +1,9 @@
 pipeline {
     environment {
-        JAVA_HOME = '"/usr/lib/jvm/java-11-openjdk-amd64/'
         MAVEN_CLI_OPTS= '--batch-mode -DignoreSnapshots=true  -e -B -U --no-transfer-progress  -Dskip.unit.tests=true -Dskip.integration.tests=true -Dmaven.test.skip=true'
-        imagename = ''
-        registryCredential = ''
-        dockerImage = ''
+        imagename = 'jamecaes/docker-test'
+        registryCredential = 'registry-docker'
+        dockerImage = 'registromatrixtech.jfrog.io/prisma2-imagenes/prisma2_rhel7:latest'
     }
     agent any
     options {
