@@ -18,7 +18,7 @@ node {
         sh 'ls -la target'
         withCredentials([usernamePassword(credentialsId: 'registry-docker', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
             sh 'docker login https://registromatrixtech.jfrog.io -u=$DOCKER_REGISTRY_USER -p=$DOCKER_REGISTRY_PWD'
-            sh 'docker build --build-arg JAR_FILE=target/ . '
+            sh 'docker build --build-arg JAR_FILE=target/docker-test-0.0.1-SNAPSHOT.jar . '
         }
         docker.withRegistry('https://registromatrixtech.jfrog.io', 'registry-docker'){
             
