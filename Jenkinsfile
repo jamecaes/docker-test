@@ -15,8 +15,10 @@ node {
         sh 'mvn -B -DskipTests clean install'
         sh 'echo $PATH'
         sh 'docker ps -a'
-        sh 'docker build .'
-
+        withCredentials([usernamePassword(credentialsId: 'registry-docker', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
+            sh 'docker login https://registromatrixtech.jfrog.io -u=$DOCKER_REGISTRY_USER -p=$DOCKER_REGISTRY_PWD'
+            sh 'docker build .'
+        }
         docker.withRegistry('https://registromatrixtech.jfrog.io', 'registry-docker'){
             
              sh 'docker ls'
