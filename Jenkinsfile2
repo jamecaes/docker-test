@@ -12,6 +12,7 @@ pipeline {
     tools {
         //jdk "openjdk-11"
         maven "maven"
+        docker docker
     }
     stages {
         stage('Cloning Git') {
@@ -27,6 +28,7 @@ pipeline {
         stage('Build Image') {
             steps {
                 script{
+                    sh 'docker ps'
                     dockerImage = docker.build imagename
                 }
             }
