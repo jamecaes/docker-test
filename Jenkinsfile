@@ -15,6 +15,8 @@ node {
         sh 'mvn -B -DskipTests clean install'
         sh 'echo $PATH'
         sh 'docker ps -a'
+        sh 'docker build .'
+
         docker.withRegistry('https://registromatrixtech.jfrog.io', 'registry-docker'){
             
              sh 'docker ls'
