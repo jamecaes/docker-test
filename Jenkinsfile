@@ -18,7 +18,7 @@ node {
         withDockerServer([uri: "unix:///var/run/docker.sock"]){
             withDockerRegistry([credentialsId: 'registry-docker', url: "https://registromatrixtech.jfrog.io/", toolName: 'docker']){
                 echo "login registry"
-                def image = docker.build("", "--build-arg JAR_FILE=target/docker-test-0.0.1-SNAPSHOT.jar")
+                def image = docker.build("", "--build-arg JAR_FILE=target/docker-test-0.0.1-SNAPSHOT.jar .")
                 image.push()                                
             }
         }
