@@ -8,6 +8,7 @@ node {
         env.PATH = "${dockerHome}/bin:${mavenHome}/bin:${env.PATH}"
         echo "${dockerHome}/bin:"
         docker
+        echo "despues de docker"
     }    
     stage('Clone repository') {               
         checkout scm    
