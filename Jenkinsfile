@@ -10,6 +10,10 @@ node {
         def maven = docker.image('maven:latest')
         maven.pull()
         echo "despues de docker"
+        docker.withRegistry('https://registromatrixtech.jfrog.io', 'registry-docker'){
+            
+            echo "login registry"
+        }
     }    
     stage('Clone repository') {               
         checkout scm    
