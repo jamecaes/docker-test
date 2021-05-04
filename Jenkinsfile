@@ -26,18 +26,25 @@ node {
             sh 'docker build --build-arg JAR_FILE=target/docker-test-0.0.1-SNAPSHOT.jar . '
             
         }
+            echo "antes del login"
         docker.withRegistry('https://registromatrixtech.jfrog.io', 'registry-docker'){
             
-            sh 'docker ls'
+            echo "con login"
+            sh 'docker ps'
+            echo "antes de buid jamecaes"
             app = docker.build("jamecaes/docker-test")    
         }
+        echo "despues de login"
+
     }     
     stage('Test image') {           
+            echo "antes de inside"
         app.inside {            
             sh 'echo "Tests passed"'        
         }    
     }     
     stage('Push image') {
+            echo "antes de push"
         docker.withRegistry('https://registromatrixtech.jfrog.io', 'registry-docker') {            
             app.push("${env.BUILD_NUMBER}")            
             app.push("latest")        
