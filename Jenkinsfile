@@ -14,7 +14,7 @@ node {
         echo "despues de docker"
         
         withDockerServer([uri: "unix:///var/run/docker.sock"]){
-            withDockerRegistry([credentialsId: 'registry-docker', url: "https://registromatrixtech.jfrog.io/"], toolName: 'docker'){
+            withDockerRegistry([credentialsId: 'registry-docker', url: "https://registromatrixtech.jfrog.io/", toolName: 'docker']){
                 echo "login registry"
             }
         }
