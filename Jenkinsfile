@@ -4,21 +4,9 @@ node {
     stage('Initialize')
     {
         dockerTool 'docker'
-        echo "load docker tool"
         def dockerHome = tool 'docker'
         def mavenHome  = tool 'maven'
         env.PATH = "${dockerHome}/bin:${mavenHome}/bin:${env.PATH}"
-        echo "${dockerHome}/bin:"
-        def maven = docker.image('maven:latest')
-        maven.pull()
-        echo "despues de docker"
-        
-        withDockerServer([uri: "unix:///var/run/docker.sock"]){
-            withDockerRegistry([credentialsId: 'registry-docker', url: "https://registromatrixtech.jfrog.io/", toolName: 'docker']){
-                echo "login registry"
-            }
-        }
-        
     }    
     stage('Clone repository') {               
         checkout scm    
@@ -26,6 +14,14 @@ node {
     stage('Build image') { 
         
         sh 'mvn clean install'
+        withDockerServer([uri: "unix:///var/run/docker.sock"]){
+            withDockerRegistry([credentialsId: 'registry-docker', url: "https://registromatrixtech.jfrog.io/", toolName: 'docker']){
+                echo "login registry"
+                                
+            }
+        }
+
+
         withCredentials([usernamePassword(credentialsId: 'registry-docker', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
             sh 'docker login https://registromatrixtech.jfrog.io -u=$DOCKER_REGISTRY_USER -p=$DOCKER_REGISTRY_PWD'
             sh 'docker build --build-arg JAR_FILE=target/docker-test-0.0.1-SNAPSHOT.jar . '
