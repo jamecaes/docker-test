@@ -1,6 +1,16 @@
 
 node {    
     def app     
+    agent {
+        // Equivalent to "docker build -f Dockerfile.build --build-arg version=1.0.2 ./build/
+        dockerfile {
+            //filename 'Dockerfile.build'
+            dir 'build'
+            label 'my-defined-label'
+            additionalBuildArgs  '--build-arg version=1.0.2'
+            args '-v /tmp:/tmp'
+        }
+    }
     stage('Initialize')
     {
         def dockerHome = tool 'docker'
@@ -12,17 +22,15 @@ node {
     }     
     stage('Build image') { 
         
-        sh 'mvn -B -DskipTests clean install'
-        sh 'echo $PATH'
-        sh 'docker ps -a'
-        sh 'ls -la target'
+        sh 'mvn clean install'
         withCredentials([usernamePassword(credentialsId: 'registry-docker', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
             sh 'docker login https://registromatrixtech.jfrog.io -u=$DOCKER_REGISTRY_USER -p=$DOCKER_REGISTRY_PWD'
             sh 'docker build --build-arg JAR_FILE=target/docker-test-0.0.1-SNAPSHOT.jar . '
+
         }
         docker.withRegistry('https://registromatrixtech.jfrog.io', 'registry-docker'){
             
-             sh 'docker ls'
+            sh 'docker ls'
             app = docker.build("jamecaes/docker-test")    
         }
     }     
