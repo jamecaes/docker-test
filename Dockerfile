@@ -6,4 +6,9 @@ USER devops
 
 ARG JAR_FILE
 COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+
+COPY run.sh run.sh
+COPY install.sh install.sh
+RUN sh install.sh
+
+ENTRYPOINT ["run.sh"]
