@@ -7,7 +7,8 @@ node {
         def mavenHome  = tool 'maven'
         env.PATH = "${dockerHome}/bin:${mavenHome}/bin:${env.PATH}"
         echo "${dockerHome}/bin:"
-        docker
+        def maven = docker.image('maven:latest')
+        maven.pull()
         echo "despues de docker"
     }    
     stage('Clone repository') {               
